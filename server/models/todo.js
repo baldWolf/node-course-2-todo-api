@@ -6,7 +6,7 @@ var Todo = mongoose.model('Todo', {
         required: true,
         minlength: 1,
         trim: true,
-        default: 'NA'
+        //default: 'NA'
     },
     completed: {
         type: Boolean,
