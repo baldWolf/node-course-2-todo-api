@@ -143,7 +143,7 @@ describe('DELETE /todos:id', () => {
         .expect(200)
         .expect( (res) => {
             console.log(`body id ${res.body._id} `);
-            expect(res.body._id).toBe(hexId);
+            expect(res.body.todo._id).toBe(hexId);
         })
         .end((err,res) => {
             if (err) {
