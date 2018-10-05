@@ -9,7 +9,9 @@ const todos = [ {
     text: 'First todo'
 },{
     _id: new ObjectID(),
-    text: 'Second todo'
+    text: 'Second todo',
+    completed: true,
+    completedAt: 333
 }]
 
 // clears the Todo database in mocha test
@@ -174,5 +176,94 @@ describe('DELETE /todos:id', () => {
         .get('/todos/1234}')
         .expect(404)
         .end(done);
+    });
+});
+
+describe('PATCH /todos/:id', () => {
+    it('should update the todo',(done) => {
+        // grab id of first item
+        var hexId = todos[0]._id.toHexString();
+
+        request(app)
+        .patch(`/todos/${hexId}`)
+        .send( { 
+            text: 'Awesome Text',
+            completed: true
+        })
+        .expect(200)
+        .expect( (res) => {
+            //console.log(res.body.todo);
+
+            expect(res.body.todo.text).toBe('Awesome Text');
+            expect(res.body.todo.completed).toBe(true);
+
+            var completedAt = res.body.todo.completedAt;
+            expect(typeof completedAt).toBe('number');
+        })
+        .end(done);
+        // .end((err, res) => {
+            
+        //     if (err){
+        //         return done(err);
+        //     }
+
+        //     Todo.findById(hexId).then((todo) => {
+        //         expect(res.body.todo.text).toBe('Awesome Text');
+        //         expect(res.body.todo.completed).toBe(true);
+    
+        //         var completedAt = res.body.todo.completedAt;
+        //         expect(typeof completedAt).toBe('number');
+        //         done();
+        //     }).catch((e)=> {
+        //         done(e);
+        //     });
+
+        //     //done();
+        // })
+    });
+
+    it('should clear completedAt when todo is not completed', (done) => {
+        // grab id of second todo item
+        // udpate text,, set completed to false 
+        // 200
+        // text is changed, completed false, completedAt is null
+
+        var hexId = todos[1]._id.toHexString();
+
+        request(app)
+        .patch(`/todos/${hexId}`)
+        .send( { 
+            text: 'Awesome Text 2',
+            completed: false
+        })
+        .expect(200)
+        .expect( (res) => {
+            expect(res.body.todo.text).toBe('Awesome Text 2');
+            expect(res.body.todo.completed).toBe(false);
+
+            var completedAt = res.body.todo.completedAt;
+            expect(completedAt).toBeFalsy();
+            // this seems not working
+            //expect(completedAt).toNotExist();
+        })
+        .end(done);
+        // .end((err, res) => {
+            
+        //     if (err){
+        //         return done(err);
+        //     }
+
+        //     Todo.findById(hexId).then((todo) => {
+        //         expect(res.body.todo.text).toBe('Awesome Text 2');
+        //         expect(res.body.todo.completed).toBe(false);
+    
+        //         var completedAt = res.body.todo.completedAt;
+        //         expect(completedAt).toBeFalsy();
+        //         done();
+        //     }).catch((e)=> {
+        //         done(e);
+        //     });
+        //     //done();
+        // })
     });
 });
