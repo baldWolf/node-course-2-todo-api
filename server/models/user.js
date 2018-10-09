@@ -71,7 +71,7 @@ UserSchema.pre('save', function(next) {
 
         bcrypt.genSalt(10, (err, salt)=> {
             bcrypt.hash(password, salt, (err, hash) => {
-                console.log(hash);
+                //console.log(hash);
                 user.password = hash;
                 next();
             });

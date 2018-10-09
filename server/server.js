@@ -91,7 +91,7 @@ app.post('/todos', (req, res) => {
 
 // GET /todos
 app.get('/todos', (req, res) => {
-    console.log('GET /todos');
+    //console.log('GET /todos');
     Todo.find().then( (todos)=> {
         res.send( {
             todos
@@ -106,7 +106,7 @@ app.get('/todos', (req, res) => {
 // GET /todos/:id
 app.get('/todos/:id', (req,res) => {
     var id = req.params.id;
-    console.log(id);
+    //console.log(id);
     
     if(!id || !ObjectID.isValid(id)) {
         return res
@@ -143,7 +143,7 @@ app.delete('/todos/:id', (req,res) => {
 
     // findOneAndDelete
     Todo.findByIdAndRemove(id).then((todo) => {
-        console.log('delete ==> ', todo);
+        //console.log('delete ==> ', todo);
         if(!todo) {
             return res
             .status(404)

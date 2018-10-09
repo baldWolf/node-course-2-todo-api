@@ -5,11 +5,11 @@ const bcrypt = require('bcryptjs');
 var password = '123abc';
 
 // takes long to generate if value is big
-bcrypt.genSalt(10, (err, salt)=> {
-    bcrypt.hash(password, salt, (err, hash) => {
-        console.log(hash);
-    });
-});
+// bcrypt.genSalt(10, (err, salt)=> {
+//     bcrypt.hash(password, salt, (err, hash) => {
+//         console.log(hash);
+//     });
+// });
 
 var hashedPassword = '$2a$10$mL7fSJzM/is2FbN0gTEAtOd8Wcw0omXgs8uDIWbRsPcqjNa9.PgF6';
 
