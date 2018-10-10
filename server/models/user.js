@@ -84,14 +84,17 @@ UserSchema.pre('save', function(next) {
 
 UserSchema.statics.findByCredentials = function(email,password) {
     var user = this;
-
-    return user.findOne({email}).then((current) => {
+    
+    return user.findOne({'email': email}).then((current) => {
         if (!current) {
             return Promise.reject();
         }
 
         return new Promise((resolve,reject)=> {
-            bcrypt.compare(password,current.password, (err,res) => {
+            bcrypt.compare(password, current.password, (err,res) => {
+                console.log('password: ', password);
+                console.log('hashed password', current.password);
+                console.log(res);
                 if( res ) {
                     resolve(current);
                 } else {
@@ -115,8 +118,8 @@ UserSchema.methods.generateAuthToken = function() {
     var access = 'auth';
     var token = jwt.sign({ _id: user._id.toHexString(), access}, 'abc123').toString();
 
-    user.tokens.push( {access, token});
-    //user.tokens.concat({access, token});
+    //user.tokens.push( {access, token});
+    user.tokens.concat({access, token});
 
     return user.save().then(() => {
         return token;

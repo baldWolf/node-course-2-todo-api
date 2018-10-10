@@ -325,7 +325,9 @@ describe('POST /users', ()=> {
                 //expect(user.password).toNotBe(password);
                 expect(user.password).not.toEqual(password);
                 done();
-            })
+            }).catch((e) => {
+                done(e);
+            });
         });
     });
 
@@ -343,10 +345,7 @@ describe('POST /users', ()=> {
         .end(done);
     });
 
-    it('should return create user if email in use', (done) => {
-        var email = 'example@example.com';
-        var password = '123afwefwefwafbc';
-
+    it('should not create user if email in use', (done) => {
         request(app)
         .post('/users')
         .send({
@@ -354,6 +353,66 @@ describe('POST /users', ()=> {
             password: users[0].password
         })
         .expect(400)
-        .end( done);
+        .end(done);
+    });
+});
+
+describe('POST /users/login', ()=> {
+    it('should login user and return auth token', (done)=> {
+        var email = users[1].email;
+        var password = users[1].password;
+
+        request(app)
+        .post('/users/login')
+        .send({
+            email,
+            password
+        })
+        .expect(200)
+        .expect((res) => {
+            //console.log(res);
+            expect(res.headers['x-auth']).toBeTruthy();
+        })
+        .end( (err,res) => {
+            if(err) {
+                return done(err);
+            }
+
+            user.findById(users[1]._id).then((current) => {
+                // expect(current.tokens[0]).toInclude({
+                //     access: 'auth',
+                //     token: res.headers['x-auth']
+                // })
+
+                expect(res.headers['x-auth']).toBeTruthy();
+                done();
+            }).catch((e) => {
+                done(e);
+            });
+        });
+    });
+
+    it('should reject invalid login', (done) => {
+        var email = users[1].email;
+        var password = 'jeojerjnkodffjopsjpoejfpjpfjpjpoewja';
+        request(app)
+        .post('/users/login')
+        .send({
+            email,
+            password
+        })
+        .expect(400)
+        .end((err,res) => {
+            if (err) {
+                return done(err);
+            }
+
+            user.findById(users[1]._id).then((current) => {
+                expect(current.tokens.length).toBe(0);
+                done();
+            }).catch((e) => {
+                done(e);
+            })
+        });
     });
 });

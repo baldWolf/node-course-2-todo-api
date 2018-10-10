@@ -55,16 +55,18 @@ app.post('/users/login', (req,res) => {
     // res
     // .status(200)
     // .send(body);
-
     user.findByCredentials(body.email, body.password).then((current) => {
         //res.send(current);
-        return user.generateAuthToken().then((token) => {
-            res.header('x-auth', token).send(current);
+        // should not be using the user but should use the current
+        return current.generateAuthToken().then((token) => {
+            console.log('sending auth');
+            res.header('x-auth', token).status(200).send(current);
         });
     }).catch((e)=> {
+        console.log('got error');
         res
         .status(400)
-        .send();
+        .send(e);
     });
 });
 
