@@ -92,9 +92,9 @@ UserSchema.statics.findByCredentials = function(email,password) {
 
         return new Promise((resolve,reject)=> {
             bcrypt.compare(password, current.password, (err,res) => {
-                console.log('password: ', password);
-                console.log('hashed password', current.password);
-                console.log(res);
+                //console.log('password: ', password);
+                //console.log('hashed password', current.password);
+                //console.log(res);
                 if( res ) {
                     resolve(current);
                 } else {
@@ -136,7 +136,14 @@ UserSchema.methods.generateAuthToken = function() {
     var token = jwt.sign({ _id: user._id.toHexString(), access}, 'abc123').toString();
 
     //user.tokens.push( {access, token});
-    user.tokens.concat({access, token});
+    //user.tokens.concat({access, token});
+
+    if ( user.tokens.length == 0){
+        user.tokens.push({access, token});
+    } else {
+        //user.tokens.concat({access, token});
+        //console.log('no need!');
+    }
 
     return user.save().then(() => {
         return token;
