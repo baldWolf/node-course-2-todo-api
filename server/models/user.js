@@ -143,6 +143,7 @@ UserSchema.methods.generateAuthToken = function() {
     } else {
         //user.tokens.concat({access, token});
         //console.log('no need!');
+        token = user.tokens[0].token;
     }
 
     return user.save().then(() => {

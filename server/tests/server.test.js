@@ -4,6 +4,7 @@ const {app} = require ('./../server');
 const {Todo} = require('./../models/todo');
 const {user} = require('./../models/user');
 const {ObjectID} = require('mongodb');
+const _ = require('lodash');
 const {todos, populateTodos, users, populateUsers} = require('./seed/seed');
 
 beforeEach(populateUsers);
@@ -438,7 +439,14 @@ describe('POST /users/login', ()=> {
                 //     access: 'auth',
                 //     token: res.headers['x-auth']
                 // })
-
+                //console.log(current.toObject().tokens);
+                var body =  _.pick(current.toObject().tokens[0], ['access', 'token']);
+                //console.log(res.headers['x-auth']);
+                //console.log('body ', body);
+                expect( body ).toMatchObject({
+                    access: 'auth',
+                    token: res.headers['x-auth']
+                });                        
                 expect(res.headers['x-auth']).toBeTruthy();
                 done();
             }).catch((e) => {
